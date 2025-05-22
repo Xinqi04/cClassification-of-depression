@@ -15,7 +15,7 @@ Masalah ini penting diselesaikan karena gangguan kesehatan mental yang tidak dit
 Referensi:
 
 - (https://www.researchgate.net/profile/Nurul-Hidayah-45/publication/343991731_KEPEKAAN_HUMOR_DENGAN_DEPRESI_PADA_REMAJA_DITINJAU_DARI_JENIS_KELAMIN/links/6018097545851517ef2f2867/KEPEKAAN-HUMOR-DENGAN-DEPRESI-PADA-REMAJA-DITINJAU-DARI-JENIS-KELAMIN.pdf)
-- World Health Organization. (2020). _Depression_. [https://www.who.int/news-room/fact-sheets/detail/depression](https://www.who.int/news-room/fact-sheets/detail/depression)
+- (https://www.who.int/news-room/fact-sheets/detail/depression)
 - (https://journalthamrin.com/index.php/jikmht/article/view/422)
 
 ---
@@ -162,7 +162,7 @@ Setiap model dilatih menggunakan data pelatihan (`X_train`, `y_train`) dan kemud
 
 | Model               | Accuracy | Precision | Recall | F1-score | ROC AUC |
 | ------------------- | -------- | --------- | ------ | -------- | ------- |
-| Logistic Regression | 84.63%   | 84.99%    | 89.19% | 87.04%   | 92.19%  |
+| Logistic Regression | 84.63%   | 85.00%    | 89.19% | 87.04%   | 92.19%  |
 | Random Forest       | 84.12%   | 85.10%    | 87.98% | 86.52%   | 91.48%  |
 | SVM                 | 84.68%   | 84.89%    | 89.46% | 87.12%   | 92.20%  |
 
@@ -176,11 +176,76 @@ Setiap model dilatih menggunakan data pelatihan (`X_train`, `y_train`) dan kemud
 
 - Berdasarkan evaluasi di atas, SVM (Support Vector Machine) dipilih sebagai model terbaik karena memberikan performa paling konsisten dan unggul di sebagian besar metrik utama.
 
+## Fine-Tuning dan Feature Selection: SVM
+
+Melakukan penyetelan hyperparameter (fine-tuning) dan seleksi fitur (feature selection) pada model Support Vector Machine (SVM) untuk meningkatkan performa klasifikasi.
+
+### Fine Tuning
+
+Dilakukan dengan menggunakan GridSearchCV untuk mencari kombinasi terbaik dari hyperparameter SVM, yaitu:
+
+- C: [0.1, 1, 10] – parameter regularisasi
+- gamma: ['scale', 'auto', 0.01, 0.001] – koefisien kernel RBF
+- kernel: ['rbf'] – kernel non-linear RBF
+
+### Feature Selection
+
+Menggunakan SelectKBest dengan f_classif (ANOVA F-value) untuk memilih fitur yang paling relevan terhadap target. Dicoba beberapa nilai k yaitu: [5, 10, 'all'].
+
+### Hasil
+
+- Best Parameters:
+
+  ```python
+  {
+      'feature_selection__k': 10,
+      'svm__C': 1,
+      'svm__gamma': 'scale',
+      'svm__kernel': 'rbf'
+  }
+  ```
+
+- Fitur Terpilih (Top 10):
+  1. Age
+  2. Academic Pressure
+  3. CGPA
+  4. Study Satisfaction
+  5. Sleep Duration
+  6. Dietary Habits
+  7. Have you ever had suicidal thoughts?
+  8. Work/Study Hours
+  9. Financial Stress
+  10. Family History of Mental Illness
+
+---
+
+### Evaluasi Performa Model
+
+| Metric        | Nilai |
+| ------------- | ----- |
+| Accuracy      | 0.85  |
+| Precision (0) | 0.84  |
+| Precision (1) | 0.85  |
+| Recall (0)    | 0.78  |
+| Recall (1)    | 0.89  |
+| F1-score (0)  | 0.81  |
+| F1-score (1)  | 0.87  |
+| Macro F1      | 0.84  |
+| Weighted F1   | 0.85  |
+
+---
+
+### Kesimpulan
+
+Tidak terjadi perubahan signifikan antara hasil fine tuning dan sebelum nya.
+
 ---
 
 ## Penutup
 
 Proyek ini mengembangkan model klasifikasi untuk mendeteksi potensi depresi pada siswa berdasarkan data survei yang mencakup faktor akademik, sosial, dan kebiasaan hidup. Tiga model telah diuji—Logistic Regression, Random Forest, dan Support Vector Machine (SVM)—dengan SVM terpilih sebagai model terbaik berdasarkan metrik evaluasi seperti accuracy, recall, F1-score, dan ROC AUC.
+
+Dari hasil evaluasi, model menunjukkan performa yang sangat baik dengan nilai F1-score mencapai 0.87 pada kelas target, yang mengindikasikan kemampuan deteksi yang kuat terhadap siswa yang berisiko depresi. Proses feature selection juga berhasil mengidentifikasi 10 atribut paling signifikan, seperti Academic Pressure, Study Satisfaction, Financial Stress, dan Family History of Mental Illness, yang memberikan wawasan penting mengenai faktor-faktor yang berkontribusi terhadap kondisi mental siswa.
 
 Model ini menunjukkan potensi besar dalam membantu lembaga pendidikan atau pihak konselor untuk melakukan identifikasi dini terhadap siswa yang berisiko mengalami gangguan kesehatan mental, sehingga dapat dilakukan intervensi lebih lanjut secara preventif.
 
